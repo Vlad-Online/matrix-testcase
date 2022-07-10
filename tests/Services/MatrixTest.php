@@ -228,6 +228,6 @@ class MatrixTest extends TestCase
     {
         $fileName = (new ReflectionClass($this->class))->getFileName();
         $content = file_get_contents($fileName);
-        $this->assertFalse(preg_match('/for\s*\(/i', $content), 'Still using for :(');
+        $this->assertEquals(0, preg_match('/\s+for\s*\(/i', $content), 'Still using for :(');
     }
 }
