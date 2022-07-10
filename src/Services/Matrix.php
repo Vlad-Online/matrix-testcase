@@ -18,6 +18,49 @@ class Matrix implements MatrixInterface
         $this->minSize = min($this->rows, $this->columns);
     }
 
+    protected static function getRows(array $matrix): int
+    {
+        return count($matrix);
+    }
+
+    protected static function getColumns(array $matrix): int
+    {
+        return self::getRows($matrix) > 0 ? count($matrix[0]) : 0;
+    }
+
+    protected static function swapRows(array $matrix, int $i1, int $i2): array
+    {
+        $rows = self::getRows($matrix);
+        if (($i1 >= $rows) || ($i2 >= $rows) || ($i1 == $i2)) return $matrix;
+        $row = $matrix[$i1];
+        $matrix[$i1] = $matrix[$i2];
+        $matrix[$i2] = $row;
+        return $matrix;
+    }
+
+    protected static function swapColumns(array $matrix, int $x1, int $x2): array
+    {
+        $width = self::getColumns($matrix);
+        $height = self::getRows($matrix);
+        if (($x1 >= $width) || ($x2 >= $width) || ($x1 == $x2)) return $matrix;
+        $x = 0;
+        while ($x < $height) {
+            $tmp = $matrix[$x][$x1];
+            $matrix[$x][$x1] = $matrix[$x][$x2];
+            $matrix[$x][$x2] = $tmp;
+            $x++;
+        }
+        return $matrix;
+    }
+
+    protected static function simulateIncrementFor(int $i, callable $checkCond, callable $func)
+    {
+        while ($checkCond($i)) {
+            $func($i);
+            $i++;
+        }
+    }
+
     public function getRank(): int
     {
         $this->transformMatrix();
@@ -41,17 +84,6 @@ class Matrix implements MatrixInterface
             $i++;
         }
         return $cnt;
-    }
-
-
-    protected static function getRows(array $matrix): int
-    {
-        return count($matrix);
-    }
-
-    protected static function getColumns(array $matrix): int
-    {
-        return self::getRows($matrix) > 0 ? count($matrix[0]) : 0;
     }
 
     /**
@@ -90,39 +122,6 @@ class Matrix implements MatrixInterface
             $i++;
         }
         return 0;
-    }
-
-    protected static function swapRows(array $matrix, int $i1, int $i2): array
-    {
-        $rows = self::getRows($matrix);
-        if (($i1 >= $rows) || ($i2 >= $rows) || ($i1 == $i2)) return $matrix;
-        $row = $matrix[$i1];
-        $matrix[$i1] = $matrix[$i2];
-        $matrix[$i2] = $row;
-        return $matrix;
-    }
-
-    protected static function swapColumns(array $matrix, int $x1, int $x2): array
-    {
-        $width = self::getColumns($matrix);
-        $height = self::getRows($matrix);
-        if (($x1 >= $width) || ($x2 >= $width) || ($x1 == $x2)) return $matrix;
-        $x = 0;
-        while ($x < $height) {
-            $tmp = $matrix[$x][$x1];
-            $matrix[$x][$x1] = $matrix[$x][$x2];
-            $matrix[$x][$x2] = $tmp;
-            $x++;
-        }
-        return $matrix;
-    }
-
-    protected static function simulateIncrementFor(int $i, callable $checkCond, callable $func)
-    {
-        while ($checkCond($i)) {
-            $func($i);
-            $i++;
-        }
     }
 
     protected function transformMatrix()
